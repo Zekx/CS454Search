@@ -45,7 +45,7 @@ public class Extractor {
     public Extractor(){
     	stopWords = new ArrayList<String>();
     	
-    	File file = new File(".\\resources\\stopwords.txt");
+    	File file = new File("C:/Users/Brandon/workspace/CS454Search/resources/stopwords.txt");
     	try{
     		BufferedReader stream = new BufferedReader(new FileReader(file));
     		
@@ -91,6 +91,24 @@ public class Extractor {
 		
 		return SHA256String.toString();
 	}
+    
+    public String extractString(File file)throws IOException, SAXException, TikaException{
+    	String body = "";
+    	try{
+            InputStream stream = new FileInputStream(file);
+            BodyContentHandler bodyHandler = new BodyContentHandler();
+            Metadata metadata = new Metadata();
+            new HtmlParser().parse(stream, bodyHandler, metadata, new ParseContext());
+          
+            //System.out.println(bodyHandler.toString().replaceAll("\\s+"," "));
+            body = bodyHandler.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	
+    	return body;
+    }
 
     //This method extracts the specific document and outputs a set of string
     //Not sure if we should keep track of the count per word
@@ -100,7 +118,7 @@ public class Extractor {
         //I heard wrapping the FileInputStream in BufferedInputStream is faster, idk if it actually is
         try{
             InputStream stream = new FileInputStream(file);
-            BodyContentHandler bodyHandler = new BodyContentHandler(1000000);
+            BodyContentHandler bodyHandler = new BodyContentHandler();
             Metadata metadata = new Metadata();
             new HtmlParser().parse(stream, bodyHandler, metadata, new ParseContext());
           
@@ -141,7 +159,7 @@ public class Extractor {
         try {
 
             InputStream stream = new FileInputStream(file);
-            BodyContentHandler bodyHandler = new BodyContentHandler(1000000);
+            BodyContentHandler bodyHandler = new BodyContentHandler();
             Metadata metadata = new Metadata();
             new HtmlParser().parse(stream, bodyHandler, metadata, new ParseContext());
 
@@ -195,7 +213,7 @@ public class Extractor {
     	//I heard wrapping the FileInputStream in BufferedInputStream is faster, idk if it actually is
         try{
             InputStream stream = new FileInputStream(file);
-            BodyContentHandler bodyHandler = new BodyContentHandler(1000000);
+            BodyContentHandler bodyHandler = new BodyContentHandler();
             Metadata metadata = new Metadata();
             new HtmlParser().parse(stream, bodyHandler, metadata, new ParseContext());
 

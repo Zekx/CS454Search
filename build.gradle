@@ -27,13 +27,6 @@ dependencies {
 
     runtime 'org.apache.tika:tika-parsers:1.11'
     
-    compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
-
-	compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.0'
-	
-	compile 'org.apache.hadoop:hadoop-core:0.20.2'
-
-	
 }
 
 

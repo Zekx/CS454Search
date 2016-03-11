@@ -232,14 +232,12 @@ public class Ranking {
 
 	public void TFIDF ( String term ) {
 		DBObject object = index.findOne(new BasicDBObject("word", term.toString()));
-		System.out.println(object);
 		// Will go call the TF method to get the tf number for each document
 		BasicDBList docList = (BasicDBList) object.get("document"); // JSON Object now
 		
 		CopyOnWriteArrayList<Object> arr = new CopyOnWriteArrayList<Object>();
 		for(int i = 0; i < docList.size(); i++){
 			arr.add(docList.get(i));
-			System.out.println(docList.get(i));
 		}
 		
 		double tfNum,tfidfNum;
@@ -317,12 +315,12 @@ public class Ranking {
         //Get the connection.
         DB db = mongoClient.getDB("crawler");
         DBCollection table = db.getCollection("urlpages");
+        db.getCollection("pagerank").drop();
 
         System.out.println("Connected to MongoDB!");
         
         Ranking ranker = new Ranking(db);
         ranker.link_analysis();
-        ranker.TFIDF("discovery");
 		
         
 //        List<DBObject> result = new ArrayList<DBObject>();
