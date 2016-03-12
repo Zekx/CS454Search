@@ -1,5 +1,7 @@
 package Modeler;
 
+import java.util.ArrayList;
+
 import org.json.simple.JSONObject;
 
 public class Entry{
@@ -8,7 +10,8 @@ public class Entry{
 	String url;
 	String path;
 	double pageRank;
-	double tfidf;
+	ArrayList<Double> tfidf;
+	double magnitude;
 	
 	public Entry(String name, String hash, String url, String path, double rank, double tfidf){
 		this.name = name;
@@ -16,7 +19,19 @@ public class Entry{
 		this.url = url;
 		this.path = path;
 		this.pageRank = rank;
-		this.tfidf = tfidf;
+		this.tfidf = new ArrayList<Double>();
+		this.tfidf.add(tfidf);
+		this.magnitude = 0;
+	}
+	
+	public Entry(String name, String hash, String url, String path, double rank){
+		this.name = name;
+		this.hash = hash;
+		this.url = url;
+		this.path = path;
+		this.pageRank = rank;
+		this.tfidf = new ArrayList<Double>();
+		this.magnitude = 0;
 	}
 	
 	@Override
@@ -54,7 +69,19 @@ public class Entry{
 		return pageRank;
 	}
 	
-	public double gettfidf(){
+	public ArrayList<Double> gettfidf(){
 		return tfidf;
+	}
+	
+	public void insertTFIDF(ArrayList<Double> value){
+		this.tfidf.addAll(value);
+	}
+	
+	public double getMagnitude(){
+		return magnitude;
+	}
+	
+	public void setMagnitude(double mag){
+		this.magnitude = mag;
 	}
 }

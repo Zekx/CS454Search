@@ -27,7 +27,6 @@ public class Ranking {
 	// The word will be based on the search query
 	// Need to crawl desktop
 
-	
 	private DB database;
 	public DBCollection table;
 	public DBCollection index;
@@ -302,8 +301,8 @@ public class Ranking {
 	
 	public double IDF (int listSize) {
 		double docCount = table.count();
-		double logDoc = docCount / (double) listSize;
-		return Math.log(logDoc);
+		double logDoc = ((double)docCount / (double) listSize);
+		return Math.log10(logDoc);
 	}
 	
 	public static void main(String[] args){
@@ -315,13 +314,11 @@ public class Ranking {
         //Get the connection.
         DB db = mongoClient.getDB("crawler");
         DBCollection table = db.getCollection("urlpages");
-        db.getCollection("pagerank").drop();
 
         System.out.println("Connected to MongoDB!");
         
         Ranking ranker = new Ranking(db);
         ranker.link_analysis();
-		
         
 //        List<DBObject> result = new ArrayList<DBObject>();
 //		DBObject sample = new BasicDBObject();

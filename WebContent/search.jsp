@@ -40,7 +40,7 @@
             
             	<tr>
             		<td>
-            		<strong><a href="${result.path}">${result.name}</a></strong> : <p>Page Rank: ${result.pageRank}</p> </br> <p>TFIDF: ${result.tfidf}</p>
+            		<strong><a href="${result.path}">${result.name}</a></strong> : <p>Page Rank: ${result.pageRank}</p> <p>Magnitude: ${result.magnitude}</p> <p>TFIDF: ${result.tfidf}</p>
             		</td>
             	</tr>
             

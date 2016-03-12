@@ -7,7 +7,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+
+import Homework.Ranking;
+
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,40 +32,48 @@ public class SearchController extends HttpServlet {
 		String query = request.getParameter("Search");
 		String[] split = query.split(" ");
 		
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+        DB db = mongoClient.getDB("crawler");
+        Ranking rank = new Ranking(db);
+        for(String str: split){
+        	if(!str.toLowerCase().equals("and") && !str.toLowerCase().equals("or") && !str.equals("AROUND")){
+        		rank.TFIDF(str);
+        	}
+        }
+		
 		ArrayList<Entry> objects = null;
 		MongoSearch searcher = new MongoSearch();
 		if(!query.isEmpty()){
 			if(split.length == 1){
+				System.out.println("Hello!");
 				objects = searcher.searchField(query);
-				Collections.sort(objects, new Comparator<Entry>() {
-					@Override
-					public int compare(Entry one, Entry two){
-						return Double.compare(one.gettfidf(), two.gettfidf());
-					}
-				});
-				Collections.reverse(objects);
 			}
 			else{
 				
-				Boolean performAND = false, performOR = false;
+				Boolean performAND = false, performOR = false, performAROUND = false;
 				ArrayList<String> field1 = new ArrayList<String>();
 				ArrayList<String> field2 = new ArrayList<String>();
 				
 				for(String text: split){
-					if(text.toLowerCase().equals("and")&& !performOR){
+					if(text.toLowerCase().equals("and")&& !performOR && !performAROUND){
 						performAND = true;
 					}
 					else{
-						if(text.toLowerCase().equals("or") && !performAND){
+						if(text.toLowerCase().equals("or") && !performAND && !performAROUND){
 							performOR = true;
+						}
+						else{
+							if(text.equals("AROUND") && !performAND && !performOR){
+								performAROUND = true;
+							}
 						}
 					}
 					
-					if(!performAND && !performOR){
+					if(!performAND && !performOR && !performAROUND){
 						field1.add(text);
 					}
 					else{
-						if(!text.toLowerCase().equals("and") && !text.toLowerCase().equals("or")){
+						if(!text.toLowerCase().equals("and") && !text.toLowerCase().equals("or") && !text.equals("AROUND")){
 							field2.add(text);
 						}
 					}
@@ -74,7 +87,12 @@ public class SearchController extends HttpServlet {
 						objects = searcher.searchFieldOR(field1, field2);
 					}
 					else{
-						objects = searcher.searchField(field1, true);
+						if(performAROUND){
+							objects = searcher.searchFieldAROUND(field1, field2);
+						}
+						else{
+							objects = searcher.searchFieldSingle(field1, false);
+						}
 					}
 				}
 			}
