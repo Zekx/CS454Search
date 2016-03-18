@@ -35,20 +35,24 @@ public class SearchController extends HttpServlet {
 		MongoClient mongoClient = new MongoClient("localhost", 27017);
         DB db = mongoClient.getDB("crawler");
         Ranking rank = new Ranking(db);
-        for(String str: split){
-        	if(!str.toLowerCase().equals("and") && !str.toLowerCase().equals("or") && !str.equals("AROUND")){
-        		rank.TFIDF(str);
-        	}
-        }
 		
 		ArrayList<Entry> objects = null;
 		MongoSearch searcher = new MongoSearch();
 		if(!query.isEmpty()){
 			if(split.length == 1){
-				System.out.println("Hello!");
+				for(String str: split){
+		        	if(!str.toLowerCase().equals("and") && !str.toLowerCase().equals("or") && !str.equals("AROUND")){
+		        		rank.TFIDF(str, true);
+		        	}
+		        }
 				objects = searcher.searchField(query);
 			}
 			else{
+				for(String str: split){
+		        	if(!str.toLowerCase().equals("and") && !str.toLowerCase().equals("or") && !str.equals("AROUND")){
+		        		rank.TFIDF(str, false);
+		        	}
+		        }
 				
 				Boolean performAND = false, performOR = false, performAROUND = false;
 				ArrayList<String> field1 = new ArrayList<String>();

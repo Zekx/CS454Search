@@ -120,7 +120,7 @@ public class MongoSearch {
 		Collections.sort(result, new Comparator<Entry>() {
 			@Override
 			public int compare(Entry one, Entry two){
-				return Double.compare(one.gettfidf().get(0), two.gettfidf().get(0));
+				return Double.compare(one.gettfidf().get(0)*.70 + one.getPageRank()*.30, two.gettfidf().get(0)*.70 + two.getPageRank()*.30);
 			}
 		});
 		Collections.reverse(result);
@@ -148,6 +148,7 @@ public class MongoSearch {
 	        for(String item: field){
 	        	DBObject word = index.findOne(new BasicDBObject("word", item));
 		    		if(word != null){
+		    			System.out.println(item);
 		        		BasicDBList document = (BasicDBList) word.get("document");
 		        		for(int i = 0; i < document.size(); i++){
 		        			DBObject obj = (DBObject) document.get(i);
@@ -166,10 +167,11 @@ public class MongoSearch {
 		        			DBObject found = table.findOne(new BasicDBObject("hash", hash));
 		        			Entry docu = new Entry(found.get("name").toString(), found.get("hash").toString(), found.get("url").toString(), found.get("path").toString(), docRank, tfidf);
 		        			Boolean existed = false;
-		        			for(int j = 0; j<result.size();j++){
+		        			for(int j = 0; j < result.size();j++){
 		        				Entry ent = result.get(j);
 		        				if(ent.getHash().equals(docu.getHash())){
 		        					ent.insertTFIDF(docu.gettfidf());
+		        					System.out.println("ENT: " + ent.getName() + " " + ent.getHash());
 			        				existed = true;
 			        			}
 		        			}		
@@ -490,7 +492,6 @@ public class MongoSearch {
 		      ent.insertTFIDF(tfidfMap.get(ent.getHash()));
 		      filteredResults.add(ent);
 		      vector.put(ent.getHash(), ent);
-		      System.out.println((i + 1) + ". " + d.get("name") + " t " + d.get("url"));
 		    }
 		    
 		    Map<String, Double> magnitude = Magnitude.Magnitude(field1, field2, vector);

@@ -229,66 +229,73 @@ public class Ranking {
 	}
 	
 
-	public void TFIDF ( String term ) {
+	public void TFIDF ( String term , Boolean normalize) {
 		DBObject object = index.findOne(new BasicDBObject("word", term.toString()));
 		// Will go call the TF method to get the tf number for each document
-		BasicDBList docList = (BasicDBList) object.get("document"); // JSON Object now
-		
-		CopyOnWriteArrayList<Object> arr = new CopyOnWriteArrayList<Object>();
-		for(int i = 0; i < docList.size(); i++){
-			arr.add(docList.get(i));
-		}
-		
-		double tfNum,tfidfNum;
-		double idfNum = IDF(docList.size());
-		
-		Hashtable<String, Double> tfidfValue = new Hashtable<String, Double>();
-		List<String> hashList = new ArrayList<String>();
-		
-		for( Object docu : arr )
-		{
-			BasicDBObject obj = (BasicDBObject) docu;
+		if(object != null){
+			BasicDBList docList = (BasicDBList) object.get("document"); // JSON Object now
 			
-			int wordCount = Integer.parseInt(obj.get("Frequency").toString());
-			DBObject oldItem = table.findOne(new BasicDBObject("hash", obj.get("docHash")));
-			hashList.add(obj.get("docHash").toString());
+			CopyOnWriteArrayList<Object> arr = new CopyOnWriteArrayList<Object>();
+			for(int i = 0; i < docList.size(); i++){
+				arr.add(docList.get(i));
+			}
 			
-			int docSize = Integer.parseInt(oldItem.get("DocumentLength").toString());
-			//System.out.println(docSize);
-			tfNum = TF(wordCount, docSize);
-			tfidfNum = tfNum * idfNum;
+			double tfNum,tfidfNum;
+			double idfNum = IDF(docList.size());
 			
-			tfidfValue.put(obj.get("docHash").toString(), tfidfNum);
+			Hashtable<String, Double> tfidfValue = new Hashtable<String, Double>();
+			List<String> hashList = new ArrayList<String>();
 			
-		}
-		
-		Hashtable<String, Double> norTFIDF = normalize(hashList, tfidfValue);
-		for (Object docu : arr) {
-			BasicDBObject obj = (BasicDBObject) docu;
-			JSONObject update = new JSONObject();
+			for( Object docu : arr )
+			{
+				BasicDBObject obj = (BasicDBObject) docu;
+				
+				int wordCount = Integer.parseInt(obj.get("Frequency").toString());
+				DBObject oldItem = table.findOne(new BasicDBObject("hash", obj.get("docHash")));
+				hashList.add(obj.get("docHash").toString());
+				
+				int docSize = Integer.parseInt(oldItem.get("DocumentLength").toString());
+				//System.out.println(docSize);
+				tfNum = TF(wordCount, docSize);
+				tfidfNum = tfNum * idfNum;
+				
+				tfidfValue.put(obj.get("docHash").toString(), tfidfNum);
+				
+			}
 			
-			/*int wordCount = Integer.parseInt(obj.get("Frequency").toString());
-			DBObject oldItem = table.findOne(new BasicDBObject("hash", obj.get("docHash")));
-			System.out.println(obj.get("docHash").toString());
-			
-			int docSize = Integer.parseInt(oldItem.get("DocumentLength").toString());
-			//System.out.println(docSize);
-			tfNum = TF(wordCount, docSize);
-			tfidfNum = tfNum * idfNum;*/
-			
-			update.put("Frequency", Integer.parseInt((obj.get("Frequency").toString())));
-			update.put("docHash", obj.get("docHash").toString());
-			update.put("tfidf", norTFIDF.get(obj.get("docHash").toString()));
-			//System.out.println(obj.get("docHash") + ": " + tfidfNum);
-			
-			docList.remove(obj);
-			docList.add(update);
-			
-			BasicDBObject updateColl = new BasicDBObject();
-			updateColl.append("$set", new BasicDBObject("word", term));
-			updateColl.append("$set", new BasicDBObject("document", docList));
-			
-			index.update(new BasicDBObject("word", term), updateColl);
+			Hashtable<String, Double> norTFIDF = normalize(hashList, tfidfValue);
+			for (Object docu : arr) {
+				BasicDBObject obj = (BasicDBObject) docu;
+				JSONObject update = new JSONObject();
+				
+				/*int wordCount = Integer.parseInt(obj.get("Frequency").toString());
+				DBObject oldItem = table.findOne(new BasicDBObject("hash", obj.get("docHash")));
+				System.out.println(obj.get("docHash").toString());
+				
+				int docSize = Integer.parseInt(oldItem.get("DocumentLength").toString());
+				//System.out.println(docSize);
+				tfNum = TF(wordCount, docSize);
+				tfidfNum = tfNum * idfNum;*/
+				
+				update.put("Frequency", Integer.parseInt((obj.get("Frequency").toString())));
+				update.put("docHash", obj.get("docHash").toString());
+				if(normalize){
+					update.put("tfidf", norTFIDF.get(obj.get("docHash").toString()));
+				}
+				else{
+					update.put("tfidf", tfidfValue.get(obj.get("docHash").toString()));
+				}
+				//System.out.println(obj.get("docHash") + ": " + tfidfNum);
+				
+				docList.remove(obj);
+				docList.add(update);
+				
+				BasicDBObject updateColl = new BasicDBObject();
+				updateColl.append("$set", new BasicDBObject("word", term));
+				updateColl.append("$set", new BasicDBObject("document", docList));
+				
+				index.update(new BasicDBObject("word", term), updateColl);
+			}
 		}
 		
 	}
