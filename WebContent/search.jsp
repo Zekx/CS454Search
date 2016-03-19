@@ -12,6 +12,8 @@
 	<body>
 		<h1>SEARCH ENGINE <small> CS454</small></h1><hr/>
 		
+		<form action = "image.jsp"> <input type = "submit" value = "Image Search"> </form>
+		
 		<form action="SearchController" method="get">
 		<div class = "row" align = "center">
 			<p>This application allows you to find documents on this server.</p>
