@@ -12,6 +12,7 @@ public class Entry{
 	double pageRank;
 	ArrayList<Double> tfidf;
 	double magnitude;
+	private double score;
 	
 	public Entry(String name, String hash, String url, String path, double rank, double tfidf){
 		this.name = name;
@@ -22,6 +23,7 @@ public class Entry{
 		this.tfidf = new ArrayList<Double>();
 		this.tfidf.add(tfidf);
 		this.magnitude = 0;
+		this.score = 0;
 	}
 	
 	public Entry(String name, String hash, String url, String path, double rank){
@@ -32,6 +34,7 @@ public class Entry{
 		this.pageRank = rank;
 		this.tfidf = new ArrayList<Double>();
 		this.magnitude = 0;
+		this.score = 0;
 	}
 	
 	@Override
@@ -84,4 +87,13 @@ public class Entry{
 	public void setMagnitude(double mag){
 		this.magnitude = mag;
 	}
+	
+	public double getScore(){
+		return score;
+	}
+	
+	public void setScore(double score){
+		this.score = score;
+	}
+	
 }

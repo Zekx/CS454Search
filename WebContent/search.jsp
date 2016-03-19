@@ -42,7 +42,11 @@
             
             	<tr>
             		<td>
-            		<strong><a href="${result.path}">${result.name}</a></strong> : <p>Page Rank: ${result.pageRank}</p> <p>Magnitude: ${result.magnitude}</p> <p>TFIDF: ${result.tfidf}</p>
+            		<strong><a href="${result.path}">${result.name}</a></strong> : 
+            		<p>Page Rank: ${result.pageRank}</p> 
+            		<p>Magnitude: ${result.magnitude}</p> 
+            		<p>TFIDF: ${result.tfidf}</p>
+            		<p>TFIDF + PageRank: ${result.score}</p>
             		</td>
             	</tr>
             

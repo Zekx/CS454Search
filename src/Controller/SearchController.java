@@ -39,6 +39,8 @@ public class SearchController extends HttpServlet {
 		ArrayList<Entry> objects = null;
 		MongoSearch searcher = new MongoSearch();
 		if(!query.isEmpty()){
+			rank.link_analysis();
+			
 			if(split.length == 1){
 				for(String str: split){
 		        	if(!str.toLowerCase().equals("and") && !str.toLowerCase().equals("or") && !str.equals("AROUND")){
@@ -95,7 +97,13 @@ public class SearchController extends HttpServlet {
 							objects = searcher.searchFieldAROUND(field1, field2);
 						}
 						else{
-							objects = searcher.searchFieldSingle(field1, false);
+							System.out.println("Hello");
+							if(field1.size() == 1){
+								objects = searcher.searchField(field1.get(0));
+							}
+							else{
+								objects = searcher.searchFieldSingle(field1, false);
+							}
 						}
 					}
 				}

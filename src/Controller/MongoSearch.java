@@ -108,6 +108,7 @@ public class MongoSearch {
 			
 			DBObject found = table.findOne(new BasicDBObject("hash", hash));
 			Entry docu = new Entry(found.get("name").toString(), found.get("hash").toString(), found.get("url").toString(), found.get("path").toString(), docRank, tfidf);
+			docu.setScore(docu.gettfidf().get(0)*.70 + docu.getPageRank()*.30);
 			Boolean existed = false;
 			for(Entry ent: result){
 				if(ent.getHash().equals(docu.getHash())){
@@ -115,7 +116,9 @@ public class MongoSearch {
 					existed = true;
 				}
 			}
-			if(!existed) result.add(docu);
+			if(!existed) {
+				result.add(docu);
+			}
 		}
 		Collections.sort(result, new Comparator<Entry>() {
 			@Override

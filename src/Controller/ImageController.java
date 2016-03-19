@@ -27,7 +27,7 @@ public class ImageController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String query = request.getParameter("Search");
-		String filePath = "C:/data/images/" + query;
+		String filePath = query;
 		Image searchTarg = new Image(new File (filePath));
 		List<Image> imgList = new ArrayList<Image>();
 		List<Document> docs = ImageAnalysis.searchDatabase(searchTarg);

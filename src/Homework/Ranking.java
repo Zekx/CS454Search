@@ -309,7 +309,7 @@ public class Ranking {
 	public double IDF (int listSize) {
 		double docCount = table.count();
 		double logDoc = ((double)docCount / (double) listSize);
-		return Math.log10(logDoc);
+		return Math.log(logDoc);
 	}
 	
 	public static void main(String[] args){

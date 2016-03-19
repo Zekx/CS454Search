@@ -67,17 +67,17 @@ public class Magnitude {
 	}
 	
 	public static Map<String, Double> Magnitude(ArrayList<String> field1, ArrayList<String> field2, Map<String, Entry> vector){
-		ArrayList<String> combined = new ArrayList<String>();
+		combined = new ArrayList<String>();
 		combined.addAll(field1);combined.addAll(field2);
 		ArrayList<Double> queryVector = new ArrayList<Double>();
 		
 		double tf = ((double)1.0/((double)combined.size()));
-		double idf = (double) Math.log10(((double)combined.size())/1.0);
+		double idf = (double) Math.log(((double)combined.size())/1.0);
 		double tfidfQ = (double) tf * idf;
 		System.out.println(tfidfQ);
 		
 		for(int i = combined.size(); i > 0; i--){
-			queryVector.add(tfidfQ);
+		queryVector.add(tfidfQ);
 		}
 		
 		double dotProduct = 0.0;
@@ -129,6 +129,7 @@ public class Magnitude {
 		Map<String, Double> magnitude = new HashMap<String, Double>();
 		normalize(queryVector, vector);
 		Iterator iter = vector.entrySet().iterator();
+		
 		while(iter.hasNext()){
 			Map.Entry<String, Entry> item = (java.util.Map.Entry<String, Entry>) iter.next();
 			String docHash = item.getKey();

@@ -45,7 +45,7 @@ public class Extractor {
     public Extractor(){
     	stopWords = new ArrayList<String>();
     	
-    	File file = new File("/CS454Search/resources/stopwords.txt");
+    	File file = new File("C:/Users/Brandon/workspace/CS454Search/resources/stopwords.txt");
     	try{
     		BufferedReader stream = new BufferedReader(new FileReader(file));
     		
